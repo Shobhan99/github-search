@@ -6,7 +6,7 @@ const MainRouter = () => {
     return (
       <div>
         <Switch>
-          <Route exact path="/search" component={Search} />
+          <Route exact path="/" component={Search} />
         </Switch>
       </div>
     );

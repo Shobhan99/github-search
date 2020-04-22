@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import Autosuggest from 'react-autosuggest';
-import './style.css'
+import '../../CSS/style.css'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 const request = require("request");
 
@@ -21,10 +21,7 @@ var languages = []
     </div>
   );
 
-  
-
   const getSuggestionValue = suggestion => suggestion.name;
-
    
 class Search extends Component{
     
@@ -56,15 +53,11 @@ class Search extends Component{
             stars: event.target.value
         });
       }
-      // Autosuggest will call this function every time you need to update suggestions.
-      // You already implemented this logic above, so just use it.
       onSuggestionsFetchRequested = ({ value }) => {
         this.setState({
           suggestions: getSuggestions(value)
         });
       };
-     
-      // Autosuggest will call this function every time you need to clear suggestions.
       onSuggestionsClearRequested = () => {
         this.setState({
           suggestions: []
@@ -96,15 +89,13 @@ class Search extends Component{
           console.log(err);
         }
       }
-        makeApiCall = searchInput => {
-          console.log("https://api.github.com/search/repositories?q=stars:"+this.state.stars+"+language:"+this.state.value+"&sort=stars&order="+this.state.order+"&type=Repositories")
+        makeApiCall(){
             request(
                 {
                   url: "https://api.github.com/search/repositories?q=stars:"+this.state.stars+"+language:"+this.state.value+"&sort=stars&order="+this.state.order+"&type=Repositories",
                   json: true
                 },
                 (error, response, body) => {
-        
                     console.log(body);
                     this.setState({
                       items: body.items
@@ -115,7 +106,6 @@ class Search extends Component{
             )}
             
       handleSubmit = () => {
-        console.log(this.state.order)
         this.makeApiCall(this.state.order);
       }
     render(){
@@ -127,25 +117,34 @@ class Search extends Component{
           };
         return (
             <div className="search-filter">
+              <div className="search-form">
+        <label>Enter language you want to search:</label>
+        <div className="form-element">
                     <Autosuggest
-                    
         suggestions={suggestions}
         onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
         onSuggestionsClearRequested={this.onSuggestionsClearRequested}
         getSuggestionValue={getSuggestionValue}
         renderSuggestion={renderSuggestion}
         inputProps={inputProps}
-      />
+      /></div>
+      
         <label>
+        <div className="form-element">
           Order by:
+          </div>
+          <div className="form-element">
           <select value={this.state.order} onChange={this.handleChange}>
             <option value="asc">Ascending</option>
             <option value="desc">Descending</option>
           </select>
+          </div>
         </label>
-        <br/>
         <label>
+        <div className="form-element">
           Stars:
+          </div>
+          <div className="form-element">
           <select value={this.state.stars} onChange={this.handleStarChange}>
             <option value="<100">less than 100</option>
             <option value="<1000">less than 1000</option>
@@ -155,22 +154,26 @@ class Search extends Component{
             <option value=">1000">greater than 1000</option>
             <option value=">10000">greater than 10000</option>
           </select>
+          </div>
         </label>
-        <br/>
+        
+        <div className="form-element">
         <button type="submit" value="Submit" onClick={this.handleSubmit}>Submit</button>
+        </div>
+        </div>
 <br/>
           <div className="repolist">
             {this.state.items.map((repo,index) => {
               return(
                 <div className="repoelement" key={index}>
                   <a href={repo.clone_url} target="_blank">
-                <h3 className="repolink">{repo.full_name}</h3></a>
+                {repo.full_name}</a>
                 </div>
               )
             }
             )}
           </div>
-            </div>
+          </div>
           );
     }
 }
